@@ -88,7 +88,22 @@ export class DropDownListFilterComponent extends BaseFilterCellComponent {
     // }, 1500);
   }
 
-  public onTextInputChange(): void {}
+  public onTextInputChange(): void {
+    const selectedOperator = this.selectedOperatorValue
+      ? this.selectedOperatorValue
+      : this.defaultOperator;
+    this.applyFilter(
+      this.updateFilter({
+        // add a filter for the field with the value
+        field: this.valueField,
+        operator: this.stringOperators.find(
+          (op) => op.value === selectedOperator
+        ).operator,
+        value: this.inputText,
+        ignoreCase: true,
+      })
+    );
+  }
 
   public onOperatorChange(value: unknown): void {
     // console.log('onChange() :', value);
