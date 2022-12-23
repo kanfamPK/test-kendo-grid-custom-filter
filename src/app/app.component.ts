@@ -23,9 +23,7 @@ const distinct = (data) =>
             <ng-template kendoGridFilterCellTemplate let-filter>
                 <my-dropdown-filter
                     [filter]="filter"
-                    [data]="distinctCategories"
-                    textField="CategoryName"
-                    valueField="CategoryID"></my-dropdown-filter>
+                    valueField="Category.CategoryName"></my-dropdown-filter>
             </ng-template>
         </kendo-grid-column>
         <kendo-grid-column field="ProductID" title="ID" [width]="60" [filterable]="false">

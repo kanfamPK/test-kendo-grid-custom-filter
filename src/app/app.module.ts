@@ -7,22 +7,19 @@ import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 
 import { AppComponent } from './app.component';
 import { DropDownListFilterComponent } from './dropdownlist-filter.component';
+import { FormsModule } from '@angular/forms';
 
 // enableProdMode();
 
 @NgModule({
-  bootstrap: [
-    AppComponent
-  ],
-  declarations: [
-    AppComponent,
-    DropDownListFilterComponent
-  ],
+  bootstrap: [AppComponent],
+  declarations: [AppComponent, DropDownListFilterComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     GridModule,
-    DropDownListModule
-  ]
+    DropDownListModule,
+    FormsModule,
+  ],
 })
-export class AppModule { }
+export class AppModule {}
