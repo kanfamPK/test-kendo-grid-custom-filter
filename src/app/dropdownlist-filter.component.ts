@@ -40,7 +40,7 @@ const _stringOperators = [
 ];
 
 @Component({
-  selector: 'my-dropdown-filter',
+  selector: 'kendogrid-filter-cell',
   template: `
     <input [ngModel]="inputText" [ngModelOptions]="{ standalone: true }"
     (ngModelChange)="onTextInputChange($event)">
