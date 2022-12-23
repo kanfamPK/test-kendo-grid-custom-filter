@@ -55,7 +55,7 @@ const _stringOperators = [
     </kendo-dropdownlist>
   `,
 })
-export class DropDownListFilterComponent extends BaseFilterCellComponent {
+export class KendogridFilterCell extends BaseFilterCellComponent {
   inputText: string = '';
   inputTextSubject$: Subject<string> = new Subject<string>();
   destroy$ = new Subject<void>();
