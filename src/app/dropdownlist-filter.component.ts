@@ -54,7 +54,6 @@ const _stringOperators = [
         valueField="value">
     </kendo-dropdownlist>
   `,
-  styleUrls: ['./test.css'],
 })
 export class DropDownListFilterComponent extends BaseFilterCellComponent {
   inputText: string = '';
