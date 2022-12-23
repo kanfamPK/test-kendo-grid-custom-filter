@@ -19,10 +19,6 @@ const distinct = (data) =>
         [sortable]="true"
         [pageable]="true"
         [filterable]="true">
-        <kendo-grid-column field="ProductID" title="ID" [width]="60" [filterable]="false">
-        </kendo-grid-column>
-        <kendo-grid-column field="ProductName" title="Product Name">
-        </kendo-grid-column>
         <kendo-grid-column field="Category.CategoryName" title="Category">
             <ng-template kendoGridFilterCellTemplate let-filter>
                 <my-dropdown-filter
@@ -31,6 +27,10 @@ const distinct = (data) =>
                     textField="CategoryName"
                     valueField="CategoryID"></my-dropdown-filter>
             </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="ProductID" title="ID" [width]="60" [filterable]="false">
+        </kendo-grid-column>
+        <kendo-grid-column field="ProductName" title="Product Name">
         </kendo-grid-column>
     </kendo-grid>
 `,
