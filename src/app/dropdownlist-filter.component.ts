@@ -4,6 +4,7 @@ import {
   BaseFilterCellComponent,
 } from '@progress/kendo-angular-grid';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 
 const _stringOperators = [
   {
@@ -42,10 +43,10 @@ const _stringOperators = [
   selector: 'my-dropdown-filter',
   template: `
     <input [ngModel]="inputText" [ngModelOptions]="{ standalone: true }"
-    (ngModelChange)="onTextInputChange()">
+    (ngModelChange)="onTextInputChange($event)">
     <kendo-dropdownlist
         [data]="stringOperators"
-        (valueChange)="onOperatorChange($event)"
+        (valueChange)="inputTextSubject$.next($event)"
         [defaultItem]="defaultItem"
         [value]="selectedOperatorValue"
         [valuePrimitive]="true"
@@ -55,23 +56,16 @@ const _stringOperators = [
   `,
 })
 export class DropDownListFilterComponent extends BaseFilterCellComponent {
-  // public get selectedValue(): unknown {
-  //   console.log('selectedValue() - this.valueField: ', this.valueField);
-  //   const filter = this.filterByField(this.valueField);
-  //   console.log('selectedValue() - filter:  ', filter);
-  //   return filter ? filter.value : null;
-  //   return 'AAA';
-  // }
-
   inputText: string = '';
+  inputTextSubject$: Subject<string> = new Subject<string>();
+  destroy$ = new Subject<void>();
   selectedOperatorValue = null;
   stringOperators = [..._stringOperators];
 
   @Input() public filter: CompositeFilterDescriptor;
-  // @Input() public data: unknown[];
-  // @Input() public textField: string;
   @Input() public valueField: string;
   @Input() public defaultOperator: number = 3;
+  @Input() debounceTime: number = 300;
 
   public get defaultItem(): { [Key: string]: unknown } {
     return {
@@ -81,14 +75,27 @@ export class DropDownListFilterComponent extends BaseFilterCellComponent {
 
   constructor(filterService: FilterService) {
     super(filterService);
-    // setTimeout(() => {
-    // console.log('data: ', this.data);
-    // console.log('data sample: ', this.data[0]);
-    // console.log('operator list ', this.operators);
-    // }, 1500);
   }
 
-  public onTextInputChange(): void {
+  ngOnInit() {
+    this.inputTextSubject$
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(this.debounceTime),
+        distinctUntilChanged()
+      )
+      .subscribe((text) => {
+        this.inputText = text;
+        this.handleTextInputChange();
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  public handleTextInputChange(): void {
     const selectedOperator = this.selectedOperatorValue
       ? this.selectedOperatorValue
       : this.defaultOperator;
@@ -96,9 +103,7 @@ export class DropDownListFilterComponent extends BaseFilterCellComponent {
       this.updateFilter({
         // add a filter for the field with the value
         field: this.valueField,
-        operator: this.stringOperators.find(
-          (op) => op.value === selectedOperator
-        ).operator,
+        operator: this.stringOperators.find((op) => op.value === 3).operator,
         value: this.inputText,
         ignoreCase: true,
       })
@@ -106,15 +111,8 @@ export class DropDownListFilterComponent extends BaseFilterCellComponent {
   }
 
   public onOperatorChange(value: unknown): void {
-    // console.log('onChange() :', value);
     this.selectedOperatorValue = value;
-    // console.log(
-    //   'APPLY: ',
-    //   this.valueField,
-    //   this.stringOperator.find((op) => op.value === this.selectedOperatorValue)
-    //     .operator,
-    //   this.inputText
-    // );
+    // update the root filter
     this.applyFilter(
       value === null // value of the default item
         ? this.removeFilter(this.valueField) // remove the filter
@@ -127,6 +125,6 @@ export class DropDownListFilterComponent extends BaseFilterCellComponent {
             value: this.inputText,
             ignoreCase: true,
           })
-    ); // update the root filter
+    );
   }
 }
