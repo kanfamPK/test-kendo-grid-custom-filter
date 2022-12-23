@@ -43,7 +43,7 @@ const _stringOperators = [
   selector: 'my-dropdown-filter',
   template: `
     <input [ngModel]="inputText" [ngModelOptions]="{ standalone: true }"
-    (ngModelChange)="inputTextSubject$.next($event)">
+    (ngModelChange)="onTextInputChange($event)">
     <kendo-dropdownlist
         [data]="stringOperators"
         (valueChange)="onOperatorChange($event)"
@@ -54,6 +54,7 @@ const _stringOperators = [
         valueField="value">
     </kendo-dropdownlist>
   `,
+  styleUrls: ['./test.css'],
 })
 export class DropDownListFilterComponent extends BaseFilterCellComponent {
   inputText: string = '';
@@ -109,6 +110,10 @@ export class DropDownListFilterComponent extends BaseFilterCellComponent {
         ignoreCase: true,
       })
     );
+  }
+
+  public onTextInputChange(event): void {
+    this.inputTextSubject$.next(event);
   }
 
   public onOperatorChange(value): void {
