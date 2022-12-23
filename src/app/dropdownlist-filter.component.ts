@@ -103,7 +103,7 @@ export class KendogridFilterCell extends BaseFilterCellComponent {
       this.updateFilter({
         field: this.valueField,
         operator: this.stringOperators.find(
-          (op) => op.value === this.selectedOperatorValue
+          (op) => op.value === selectedOperator
         ).operator,
         value: this.inputText,
         ignoreCase: true,
