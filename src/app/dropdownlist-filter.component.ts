@@ -8,10 +8,10 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 @Component({
   selector: 'my-dropdown-filter',
   template: `
-    <input>
+    <input [value]="inputText">
     <kendo-dropdownlist
         [data]="stringOperator"
-        (valueChange)="onChange($event)"
+        (valueChange)="onOperatorChange($event)"
         [defaultItem]="defaultItem"
         [value]="selectedOperatorValue"
         [valuePrimitive]="true"
@@ -33,41 +33,46 @@ export class DropDownListFilterComponent extends BaseFilterCellComponent {
   selectedOperatorValue = null;
   stringOperator = [
     {
-      text: 'Startswith',
-      value: 1
+      text: 'Starts with',
+      value: 1,
+      operator: 'startswith'
     },
     {
       text: 'Ends with',
-      value: 2
+      value: 2,
+      operator: 'endswith'
     },
     {
       text: 'Contains',
-      value: 3
+      value: 3,
+      operator: 'contains'
     },
     {
       text: 'Does not contain',
-      value: 4
+      value: 4,
+      operator: 'doesnotcontain'
     },
     {
       text: 'Is empty',
-      value: 5
+      value: 5,
+      operator: 'isempty'
     },
     {
       text: 'Is not empty',
-      value: 6
+      value: 6,
+      operator: 'isnotempty'
     },
-  ]
+  ];
 
   @Input() public filter: CompositeFilterDescriptor;
   @Input() public data: unknown[];
   @Input() public textField: string;
   @Input() public valueField: string;
-  @Input() public defaultOperator: number = 2;
-
+  @Input() public defaultOperator: number = 3;
 
   public get defaultItem(): { [Key: string]: unknown } {
     return {
-      ...this.stringOperator[this.defaultOperator]
+      ...this.stringOperator.find((op) => op.value === this.defaultOperator),
     };
   }
 
@@ -76,21 +81,22 @@ export class DropDownListFilterComponent extends BaseFilterCellComponent {
     setTimeout(() => {
       console.log('data: ', this.data);
       console.log('data sample: ', this.data[0]);
-      console.log('operator list ', this.operators)
+      console.log('operator list ', this.operators);
     }, 1500);
   }
 
-  public onChange(value: unknown): void {
+  public onOperatorChange(value: unknown): void {
     console.log('onChange() :', value);
-    // this.applyFilter(
-    //   value === null // value of the default item
-    //     ? this.removeFilter(this.valueField) // remove the filter
-    //     : this.updateFilter({
-    //         // add a filter for the field with the value
-    //         field: this.valueField,
-    //         operator: 'eq',
-    //         value: value,
-    //       })
-    // ); // update the root filter
+    this.selectedOperatorValue = value;
+    this.applyFilter(
+      value === null // value of the default item
+        ? this.removeFilter(this.valueField) // remove the filter
+        : this.updateFilter({
+            // add a filter for the field with the value
+            field: this.valueField,
+            operator: this.stringOperator.find(op => op.value === this.selectedOperatorValue).operator,
+            value: this.inputText,
+          })
+    ); // update the root filter
   }
 }
