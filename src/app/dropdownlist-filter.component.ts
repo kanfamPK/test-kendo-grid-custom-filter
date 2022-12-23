@@ -99,11 +99,14 @@ export class DropDownListFilterComponent extends BaseFilterCellComponent {
     const selectedOperator = this.selectedOperatorValue
       ? this.selectedOperatorValue
       : this.defaultOperator;
+    console.log(selectedOperator);
     this.applyFilter(
       this.updateFilter({
         // add a filter for the field with the value
         field: this.valueField,
-        operator: this.stringOperators.find((op) => op.value === 3).operator,
+        operator: this.stringOperators.find(
+          (op) => op.value === this.selectedOperatorValue
+        ).operator,
         value: this.inputText,
         ignoreCase: true,
       })
@@ -112,6 +115,7 @@ export class DropDownListFilterComponent extends BaseFilterCellComponent {
 
   public onOperatorChange(value): void {
     this.selectedOperatorValue = value;
+    console.log(this.selectedOperatorValue);
     // update the root filter
     this.applyFilter(
       value === null // value of the default item
