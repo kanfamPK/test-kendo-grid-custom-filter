@@ -43,10 +43,10 @@ const _stringOperators = [
   selector: 'my-dropdown-filter',
   template: `
     <input [ngModel]="inputText" [ngModelOptions]="{ standalone: true }"
-    (ngModelChange)="onTextInputChange($event)">
+    (ngModelChange)="inputTextSubject$.next($event)">
     <kendo-dropdownlist
         [data]="stringOperators"
-        (valueChange)="inputTextSubject$.next($event)"
+        (valueChange)="onOperatorChange($event)"
         [defaultItem]="defaultItem"
         [value]="selectedOperatorValue"
         [valuePrimitive]="true"
@@ -110,7 +110,7 @@ export class DropDownListFilterComponent extends BaseFilterCellComponent {
     );
   }
 
-  public onOperatorChange(value: unknown): void {
+  public onOperatorChange(value): void {
     this.selectedOperatorValue = value;
     // update the root filter
     this.applyFilter(
